@@ -1,12 +1,28 @@
 ---
 name: notion-operator
 description: Safely handle Notion tasks with search-first, low-duplication workflows, and explicit change summaries.
-metadata: { "openclaw": { "emoji": "🧠" } }
+metadata:
+  {
+    "openclaw":
+      {
+        "emoji": "🧠",
+        "requires": { "env": ["COMPOSIO_API_KEY", "COMPOSIO_CONNECTED_ACCOUNT_ID_NOTION"] },
+      },
+  }
 ---
 
 # notion-operator
 
 Use this skill when the user asks to read, create, or update Notion content.
+
+## Integration path
+
+1. Use the shared Composio helper at `src/infra/composio/client.ts` rather than ad hoc curl when code changes are needed.
+2. Use `COMPOSIO_CONNECTED_ACCOUNT_ID_NOTION` for Notion tool execution.
+3. Prefer explicit tool discovery before execution:
+   - list tools for toolkit `notion`
+   - inspect the chosen tool schema
+   - execute with validated arguments
 
 ## Core behavior
 
@@ -31,6 +47,7 @@ Use this skill when the user asks to read, create, or update Notion content.
 ## Response format
 
 Return:
+
 1. What changed.
 2. Where it changed (page title and link when available).
 3. What was skipped and why.
