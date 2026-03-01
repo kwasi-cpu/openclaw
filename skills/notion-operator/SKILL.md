@@ -1,12 +1,19 @@
 ---
 name: notion-operator
-description: Safely handle Notion tasks with search-first, low-duplication workflows, and explicit change summaries.
+description: Manage Notion via Composio with search-first, low-duplication workflows, and explicit change summaries.
 metadata:
   {
     "openclaw":
       {
         "emoji": "🧠",
-        "requires": { "env": ["COMPOSIO_API_KEY", "COMPOSIO_CONNECTED_ACCOUNT_ID_NOTION"] },
+        "requires":
+          {
+            "env":
+              [
+                "COMPOSIO_API_KEY",
+                "COMPOSIO_CONNECTED_ACCOUNT_ID_NOTION",
+              ],
+          },
       },
   }
 ---
@@ -23,6 +30,13 @@ Use this skill when the user asks to read, create, or update Notion content.
    - list tools for toolkit `notion`
    - inspect the chosen tool schema
    - execute with validated arguments
+
+## Workflow
+
+1. Find the correct Notion tool for the requested action.
+2. Inspect required input shape before executing.
+3. Execute against the connected Notion account.
+4. Return a short summary with the resulting page ID or URL when available.
 
 ## Core behavior
 
@@ -47,7 +61,6 @@ Use this skill when the user asks to read, create, or update Notion content.
 ## Response format
 
 Return:
-
 1. What changed.
 2. Where it changed (page title and link when available).
 3. What was skipped and why.
@@ -57,4 +70,4 @@ Return:
 
 1. If auth is expired, report re-auth is required.
 2. If permissions fail, report the exact missing access.
-3. If the API/tool call fails, report the error in plain language and the next retry step.
+3. If the API or tool call fails, report the error in plain language and the next retry step.
