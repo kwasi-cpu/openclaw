@@ -36,6 +36,8 @@ type RawComposioTool = {
 
 type RawConnectedAccount = {
   id?: unknown;
+  user_id?: unknown;
+  userId?: unknown;
   status?: unknown;
   provider?: unknown;
   toolkit?: unknown;
@@ -117,6 +119,7 @@ export class ComposioClient {
   async executeTool(params: ComposioExecuteToolInput): Promise<ComposioExecuteToolResult> {
     const toolSlug = params.toolSlug.trim();
     const connectedAccountId = params.connectedAccountId.trim();
+    const userId = params.userId?.trim();
     if (!toolSlug) {
       throw new Error("Composio tool slug is required");
     }
@@ -129,6 +132,7 @@ export class ComposioClient {
         method: "POST",
         body: JSON.stringify({
           connected_account_id: connectedAccountId,
+          ...(userId ? { user_id: userId } : {}),
           arguments: params.arguments,
         }),
       },
@@ -201,6 +205,12 @@ function toConnectedAccount(raw: RawConnectedAccount): ComposioConnectedAccount 
   }
   return {
     id,
+    userId:
+      typeof raw.user_id === "string"
+        ? raw.user_id
+        : typeof raw.userId === "string"
+          ? raw.userId
+          : undefined,
     status: typeof raw.status === "string" ? raw.status : undefined,
     provider: typeof raw.provider === "string" ? raw.provider : undefined,
     toolkit: toToolkitRef(raw.toolkit),

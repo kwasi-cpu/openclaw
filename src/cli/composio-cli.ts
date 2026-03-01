@@ -42,6 +42,8 @@ export function registerComposioCli(program: Command) {
     .description("Execute one Composio tool")
     .option("--account <id>", "Explicit connected account id")
     .option("--account-env <name>", "Environment variable name containing the connected account id")
+    .option("--user-id <id>", "Explicit Composio user id")
+    .option("--user-env <name>", "Environment variable name containing the Composio user id")
     .option("--args <json>", "Tool arguments as a JSON object string")
     .option("--skill <key>", "Resolve auth from a configured skill entry")
     .option("--json", "Output JSON", false)

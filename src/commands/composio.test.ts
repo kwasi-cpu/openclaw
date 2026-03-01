@@ -14,7 +14,7 @@ function createRuntime() {
 }
 
 describe("composio commands", () => {
-  it("resolves api key and account id from skill env for execution", async () => {
+  it("resolves api key, account id, and user id from skill env for execution", async () => {
     const runtime = createRuntime();
     const executeTool = vi.fn(async () => ({
       successful: true,
@@ -40,6 +40,7 @@ describe("composio commands", () => {
                   env: {
                     COMPOSIO_API_KEY: "ak_test",
                     COMPOSIO_CONNECTED_ACCOUNT_ID_NOTION: "ca_123",
+                    COMPOSIO_USER_ID_NOTION: "usr_456",
                   },
                 },
               },
@@ -58,6 +59,7 @@ describe("composio commands", () => {
     expect(executeTool).toHaveBeenCalledWith({
       toolSlug: "NOTION_CREATE_PAGE",
       connectedAccountId: "ca_123",
+      userId: "usr_456",
       arguments: { title: "Test" },
     });
   });
@@ -97,12 +99,18 @@ describe("composio commands", () => {
           listTools: vi.fn(),
           getTool: vi.fn(),
           listConnectedAccounts: async () => [
-            { id: "ca_123", status: "ACTIVE", toolkit: { slug: "notion" }, raw: {} },
+            {
+              id: "ca_123",
+              userId: "usr_456",
+              status: "ACTIVE",
+              toolkit: { slug: "notion" },
+              raw: {},
+            },
           ],
           executeTool: vi.fn(),
         }) as never,
     });
 
-    expect(runtime.log).toHaveBeenCalledWith("ca_123\tnotion\tACTIVE");
+    expect(runtime.log).toHaveBeenCalledWith("ca_123\tnotion\tACTIVE\tusr_456");
   });
 });

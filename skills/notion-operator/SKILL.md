@@ -6,7 +6,15 @@ metadata:
     "openclaw":
       {
         "emoji": "🧠",
-        "requires": { "env": ["COMPOSIO_API_KEY", "COMPOSIO_CONNECTED_ACCOUNT_ID_NOTION"] },
+        "requires":
+          {
+            "env":
+              [
+                "COMPOSIO_API_KEY",
+                "COMPOSIO_CONNECTED_ACCOUNT_ID_NOTION",
+                "COMPOSIO_USER_ID_NOTION",
+              ],
+          },
       },
   }
 ---
@@ -19,7 +27,8 @@ Use this skill when the user asks to read, create, or update Notion content.
 
 1. Use the shared Composio helper at `src/infra/composio/client.ts` through the CLI surface `openclaw composio ...` rather than ad hoc curl when code changes are needed.
 2. Use `COMPOSIO_CONNECTED_ACCOUNT_ID_NOTION` for Notion tool execution.
-3. Preferred command flow:
+3. Use `COMPOSIO_USER_ID_NOTION` when the connected account requires a Composio user id for execution.
+4. Preferred command flow:
    - `openclaw composio tools list --toolkit notion --skill notion-operator`
    - `openclaw composio tools get <TOOL_SLUG> --skill notion-operator`
    - `openclaw composio tools exec <TOOL_SLUG> --skill notion-operator --account-env COMPOSIO_CONNECTED_ACCOUNT_ID_NOTION --args '{"...":"..."}'`

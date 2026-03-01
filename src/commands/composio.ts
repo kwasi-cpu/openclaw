@@ -34,6 +34,8 @@ type ListAccountsOptions = SharedOptions & {
 type ExecuteToolOptions = SharedOptions & {
   account?: string;
   accountEnv?: string;
+  userId?: string;
+  userEnv?: string;
   args?: string;
 };
 
@@ -134,11 +136,19 @@ export async function composioExecuteToolCommand(
     explicitAccount: opts.account,
     accountEnvName: opts.accountEnv,
   });
+  const userId = resolveUserId({
+    config,
+    skillKey,
+    explicitUserId: opts.userId,
+    userEnvName: opts.userEnv,
+    accountEnvName: opts.accountEnv,
+  });
   const args = parseJsonArgs(opts.args);
   const client = createClient({ config, skillKey, apiKey }, deps);
   const result = await client.executeTool({
     toolSlug,
     connectedAccountId,
+    userId,
     arguments: args,
   });
   printExecutionResult(result, Boolean(opts.json), runtime);
@@ -196,6 +206,49 @@ function resolveConnectedAccountId(params: {
   throw new Error(
     `Connected account id not found for ${envName}. Set it in the environment or skills.entries.<skill>.env.${envName}.`,
   );
+}
+
+function resolveUserId(params: {
+  config: OpenClawConfig | undefined;
+  skillKey?: string;
+  explicitUserId?: string;
+  userEnvName?: string;
+  accountEnvName?: string;
+}): string | undefined {
+  const explicit = params.explicitUserId?.trim();
+  if (explicit) {
+    return explicit;
+  }
+  const envNames = [
+    params.userEnvName?.trim(),
+    deriveUserEnvName(params.accountEnvName),
+    "COMPOSIO_USER_ID",
+  ].filter((value): value is string => Boolean(value));
+  for (const envName of envNames) {
+    const envValue = process.env[envName]?.trim();
+    if (envValue) {
+      return envValue;
+    }
+  }
+  const skill = resolveSkillEntry(params.config, params.skillKey);
+  for (const envName of envNames) {
+    const skillValue = skill?.env?.[envName]?.trim();
+    if (skillValue) {
+      return skillValue;
+    }
+  }
+  return undefined;
+}
+
+function deriveUserEnvName(accountEnvName: string | undefined): string | undefined {
+  const value = accountEnvName?.trim();
+  if (!value) {
+    return undefined;
+  }
+  if (value.includes("CONNECTED_ACCOUNT_ID")) {
+    return value.replace("CONNECTED_ACCOUNT_ID", "USER_ID");
+  }
+  return undefined;
 }
 
 function resolveSkillEntry(config: OpenClawConfig | undefined, skillKey?: string) {
@@ -271,7 +324,8 @@ function printAccounts(
   for (const account of accounts) {
     const toolkit = account.toolkit?.slug ?? "-";
     const status = account.status ?? "-";
-    runtime.log(`${account.id}\t${toolkit}\t${status}`);
+    const userId = account.userId ?? "-";
+    runtime.log(`${account.id}\t${toolkit}\t${status}\t${userId}`);
   }
 }
 

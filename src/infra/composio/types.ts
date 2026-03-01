@@ -18,6 +18,7 @@ export type ComposioToolDefinition = ComposioToolSummary & {
 
 export type ComposioConnectedAccount = {
   id: string;
+  userId?: string | null;
   status?: string | null;
   provider?: string | null;
   toolkit?: ComposioToolkitRef | null;
@@ -27,6 +28,7 @@ export type ComposioConnectedAccount = {
 export type ComposioExecuteToolInput = {
   toolSlug: string;
   connectedAccountId: string;
+  userId?: string;
   arguments: Record<string, unknown>;
 };
 
