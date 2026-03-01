@@ -27,6 +27,13 @@ type RawTodoistProject = {
   is_inbox_project?: unknown;
 };
 
+type RawTodoistListResponse<T> =
+  | T[]
+  | {
+      results?: T[];
+      next_cursor?: unknown;
+    };
+
 type RawTodoistTask = {
   id?: unknown;
   content?: unknown;
@@ -58,8 +65,8 @@ export class TodoistClient {
   }
 
   async listProjects(): Promise<TodoistProject[]> {
-    const payload = await this.requestJson<RawTodoistProject[]>("projects");
-    return payload.map((item) => toProject(item));
+    const payload = await this.requestJson<RawTodoistListResponse<RawTodoistProject>>("projects");
+    return unwrapListPayload(payload, "projects").map((item) => toProject(item));
   }
 
   async listTasks(params: { filter?: string; lang?: string } = {}): Promise<TodoistTask[]> {
@@ -71,8 +78,8 @@ export class TodoistClient {
       query.set("lang", params.lang.trim());
     }
     const suffix = query.size > 0 ? `?${query.toString()}` : "";
-    const payload = await this.requestJson<RawTodoistTask[]>(`tasks${suffix}`);
-    return payload.map((item) => toTask(item));
+    const payload = await this.requestJson<RawTodoistListResponse<RawTodoistTask>>(`tasks${suffix}`);
+    return unwrapListPayload(payload, "tasks").map((item) => toTask(item));
   }
 
   async createTask(input: TodoistCreateTaskInput): Promise<TodoistCreateTaskResult> {
@@ -198,6 +205,16 @@ function coerceOptionalString(value: unknown): string | undefined {
     return String(value);
   }
   return undefined;
+}
+
+function unwrapListPayload<T>(payload: RawTodoistListResponse<T>, resourceName: string): T[] {
+  if (Array.isArray(payload)) {
+    return payload;
+  }
+  if (payload && typeof payload === "object" && Array.isArray(payload.results)) {
+    return payload.results;
+  }
+  throw new Error(`Todoist ${resourceName} payload did not include an array of results`);
 }
 
 async function parseResponseBody(response: Response): Promise<unknown> {
