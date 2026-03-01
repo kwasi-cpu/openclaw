@@ -163,6 +163,15 @@ const entries: SubCliEntry[] = [
     },
   },
   {
+    name: "composio",
+    description: "Composio tool discovery and execution helpers",
+    hasSubcommands: true,
+    register: async (program) => {
+      const mod = await import("../composio-cli.js");
+      mod.registerComposioCli(program);
+    },
+  },
+  {
     name: "docs",
     description: "Search the live OpenClaw docs",
     hasSubcommands: false,
