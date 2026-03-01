@@ -80,7 +80,7 @@ export class ComposioClient {
     }
     const suffix = query.size > 0 ? `?${query.toString()}` : "";
     const payload = await this.requestJson<ComposioListResponse<RawComposioTool>>(
-      `/tools${suffix}`,
+      `tools${suffix}`,
     );
     return (payload.items ?? []).map((item) => toToolSummary(item));
   }
@@ -90,7 +90,7 @@ export class ComposioClient {
     if (!slug) {
       throw new Error("Composio tool slug is required");
     }
-    const payload = await this.requestJson<RawComposioTool>(`/tools/${encodeURIComponent(slug)}`);
+    const payload = await this.requestJson<RawComposioTool>(`tools/${encodeURIComponent(slug)}`);
     const tool = toToolSummary(payload);
     return {
       ...tool,
@@ -109,7 +109,7 @@ export class ComposioClient {
     }
     const suffix = query.size > 0 ? `?${query.toString()}` : "";
     const payload = await this.requestJson<ComposioListResponse<RawConnectedAccount>>(
-      `/connected_accounts${suffix}`,
+      `connected_accounts${suffix}`,
     );
     return (payload.items ?? []).map((item) => toConnectedAccount(item));
   }
@@ -124,7 +124,7 @@ export class ComposioClient {
       throw new Error("Composio connected account id is required");
     }
     const payload = await this.requestJson<RawExecuteResponse>(
-      `/tools/execute/${encodeURIComponent(toolSlug)}`,
+      `tools/execute/${encodeURIComponent(toolSlug)}`,
       {
         method: "POST",
         body: JSON.stringify({
