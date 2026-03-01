@@ -172,6 +172,15 @@ const entries: SubCliEntry[] = [
     },
   },
   {
+    name: "todoist",
+    description: "Direct Todoist helpers",
+    hasSubcommands: true,
+    register: async (program) => {
+      const mod = await import("../todoist-cli.js");
+      mod.registerTodoistCli(program);
+    },
+  },
+  {
     name: "docs",
     description: "Search the live OpenClaw docs",
     hasSubcommands: false,
