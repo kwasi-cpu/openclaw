@@ -103,6 +103,10 @@ When rebuilding or moving the Sunday setup to another VPS:
 
 1. Deploy the bridge template from:
 - `/Users/kwasiadusei/openclaw/scripts/composio-bridge/notion-comment-bridge.template.mjs`
+- preferred install command on VPS:
+  ```bash
+  /root/openclaw-workspace/scripts/composio-bridge/install-notion-comment-bridge.sh
+  ```
 
 2. Set bridge env:
 - `OPENCLAW_HOOK_TOKEN`
@@ -128,3 +132,4 @@ These repo files are now the durable source for the Sunday operating setup:
 2. `/Users/kwasiadusei/openclaw/SUNDAY_LIVE_OPERATIONS_RUNBOOK.md`
 3. `/Users/kwasiadusei/openclaw/scripts/composio-bridge/notion-comment-bridge.template.mjs`
 4. `/Users/kwasiadusei/openclaw/scripts/composio-bridge/sync-notion-comment-triggers.sh`
+5. `/Users/kwasiadusei/openclaw/scripts/composio-bridge/install-notion-comment-bridge.sh`
