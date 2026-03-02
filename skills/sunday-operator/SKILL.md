@@ -1,6 +1,6 @@
 ---
 name: sunday-operator
-description: Operate Sunday as a gate-locked 0-to-1 business system by using the Sunday repo mirror for product reality and the canonical Notion readiness page as the single source of truth for planning and execution.
+description: Operate Sunday as a cycle-driven 0-to-1 business system by using the Sunday repo mirror for product reality and the canonical Notion readiness page as the single source of truth for planning and execution.
 metadata:
   {
     "openclaw":
@@ -21,7 +21,7 @@ Treat Sunday as one operating system with these roles:
 
 2. `MVP Readiness Gates & Smoke Test (Canonical)` in Notion
 - single source of truth for launch work
-- canonical checklist, gate status, and historical record
+- canonical checklist, active cycle, next cycle, and historical record
 
 ## Core operating rule
 
@@ -36,24 +36,21 @@ The Notion page `MVP Readiness Gates & Smoke Test (Canonical)` is authoritative.
 3. Do not invent work outside the canonical page unless it is strictly required to complete an existing gate item.
 4. Keep checked items as historical record.
 
-## Gate lock
+## Cycle lock
 
-Until all critical pre-launch gates are complete, work must stay within this exact order:
+Work must stay within the currently active cycle defined on the canonical Notion page.
 
-1. Gate 2 Clinical Safety
-2. Gate 3 HIPAA and Privacy
-3. Gate 4 Security Hardening
-4. Gate 5 Reliability and Observability
-5. Gate 6 Release Reproducibility
-6. Then Gate 7 customer-readiness
-
-No random tasks outside this order unless they directly unblock the current highest-priority open gate.
+1. Treat the top-most section named `Cycle YYYY-MM-DD (Active)` as the active cycle unless the page explicitly marks a different active cycle.
+2. Work in the dependency order defined inside that active cycle.
+3. Do not invent work outside the active cycle unless it directly unblocks the current highest-priority unchecked item.
+4. Treat any `Next Cycle` section as planning inventory only, not active work, until the current active cycle is complete.
 
 ## Workflow
 
 1. Start from the canonical Notion page:
-- identify the highest-priority unchecked gate
-- identify unchecked subtasks within that gate
+- identify the active cycle
+- identify the highest-priority unchecked item within that cycle
+- identify unchecked subtasks within that item
 - identify blockers or dependencies
 
 2. Check the repo mirror only as needed:
@@ -70,7 +67,7 @@ No random tasks outside this order unless they directly unblock the current high
 3. Do not add downstream tasks before prerequisites are complete.
 4. Do not create duplicate items when valid unchecked items already exist.
 5. Refill work only when completed items create capacity or when the active queue drops below 5.
-6. Every active item must map directly to the current highest-priority open gate or to a concrete blocker for that gate.
+6. Every active item must map directly to the current highest-priority open item in the active cycle or to a concrete blocker for that item.
 7. Avoid vanity tasks, broad speculative work, and side quests.
 
 ## Planning rules
@@ -79,33 +76,34 @@ No random tasks outside this order unless they directly unblock the current high
 2. If a decision changes sequencing, ask one short clarifying question instead of inventing assumptions.
 3. Explicitly state what is urgent, what is important, and what is intentionally deferred.
 4. Notion is the planning and execution truth for Sunday.
-5. Do not generate work for later gates while earlier critical gates remain open unless the work can run safely in parallel and clearly improves the same launch path.
+5. Do not generate work for later cycle items while earlier active-cycle prerequisites remain open unless the work can run safely in parallel and clearly improves the same launch path.
 
 ## Daily cadence behavior
 
 When doing the morning plan:
 
-1. identify the current gate focus
+1. identify the current active cycle and leading item
 2. identify the top 5 tasks for today from unchecked items in the canonical page
 3. explain why those tasks matter now
 4. update the active cycle section in the canonical page so the active queue stays between 5 and 10 unchecked items
-5. note what was intentionally deferred because of gate order
+5. note what was intentionally deferred because of cycle order
 
 When doing the midday review:
 
 1. review completed work against the canonical page
 2. preserve unfinished but still-valid unchecked items
 3. only add new items if completed work opened capacity or unblocked the next required item
-4. keep priority locked to the current highest-priority open gate
+4. keep priority locked to the current active cycle
 
 ## Cycle rollover behavior
 
-Once the current critical gate stack is complete:
+Once the current active cycle is complete:
 
 1. keep the same canonical Notion page as historical record
-2. append a new section at the top named `Cycle YYYY-MM-DD (Active)`
-3. preserve older cycles below as visible history
-4. treat checked items from older cycles as audit trail, not active work
+2. preserve the completed cycle below as visible history
+3. promote the next planned cycle by appending or renaming the top section to `Cycle YYYY-MM-DD (Active)`
+4. preserve older cycles below as visible history
+5. treat checked items from older cycles as audit trail, not active work
 
 ## Repo analysis cadence
 
@@ -121,7 +119,7 @@ Do not run full repo analysis every day unless the user explicitly asks.
 
 Return:
 
-1. Current gate focus
+1. Current active cycle
 2. Top priorities in order
 3. Canonical page changes made
 4. Blockers or missing decisions
