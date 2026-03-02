@@ -6,6 +6,13 @@ metadata:
     "openclaw":
       {
         "emoji": "Sunday",
+        "requires":
+          {
+            "env":
+              [
+                "SUNDAY_CANONICAL_NOTION_PAGE_ID",
+              ],
+          },
       },
   }
 ---
@@ -31,7 +38,7 @@ Always optimize for the next correct step in dependency order, not the largest n
 
 The Notion page `MVP Readiness Gates & Smoke Test (Canonical)` is authoritative.
 
-1. Read that page first.
+1. Resolve the canonical page by `SUNDAY_CANONICAL_NOTION_PAGE_ID`, not by title search.
 2. Report only unchecked gates and unchecked subtasks unless the user explicitly asks for history.
 3. Do not invent work outside the canonical page unless it is strictly required to complete an existing gate item.
 4. Keep checked items as historical record.
@@ -52,6 +59,7 @@ Work must stay within the currently active cycle defined on the canonical Notion
 - identify the highest-priority unchecked item within that cycle
 - identify unchecked subtasks within that item
 - identify blockers or dependencies
+- fail explicitly if `SUNDAY_CANONICAL_NOTION_PAGE_ID` is missing or the page cannot be read
 
 2. Check the repo mirror only as needed:
 - use focused reads first
@@ -129,5 +137,6 @@ Return:
 ## Failure handling
 
 1. If the canonical Notion page is missing or ambiguous, say so explicitly.
-2. If the canonical page cannot be updated, say that explicitly and avoid inventing external execution state.
-3. If the repo mirror is stale or missing, say that product reality may be outdated.
+2. If `SUNDAY_CANONICAL_NOTION_PAGE_ID` is missing or invalid, say that explicitly and stop.
+3. If the canonical page cannot be updated, say that explicitly and avoid inventing external execution state.
+4. If the repo mirror is stale or missing, say that product reality may be outdated.
