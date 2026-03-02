@@ -1,6 +1,6 @@
 ---
 name: sunday-operator
-description: Operate Sunday as a gate-locked 0-to-1 business system by using the Sunday repo mirror for product reality, the canonical Notion readiness page for planning truth, and Todoist only as the active execution mirror.
+description: Operate Sunday as a gate-locked 0-to-1 business system by using the Sunday repo mirror for product reality and the canonical Notion readiness page as the single source of truth for planning and execution.
 metadata:
   {
     "openclaw":
@@ -22,10 +22,6 @@ Treat Sunday as one operating system with these roles:
 2. `MVP Readiness Gates & Smoke Test (Canonical)` in Notion
 - single source of truth for launch work
 - canonical checklist, gate status, and historical record
-
-3. Todoist project `Sunday`
-- active execution mirror only
-- never the source of truth
 
 ## Core operating rule
 
@@ -65,28 +61,24 @@ No random tasks outside this order unless they directly unblock the current high
 - prioritize README, safety, privacy, security, setup, release, and architecture-critical files
 - avoid full repo scans unless explicitly asked
 
-3. Check Todoist project `Sunday`:
-- preserve still-valid active tasks
-- identify what is complete, blocked, or duplicated
-- use Todoist only to mirror the canonical page into active execution
-
-4. Produce the next actions in strict dependency order.
+3. Produce the next actions in strict dependency order from the canonical page itself.
 
 ## Task management rules
 
-1. Keep the active Todoist queue between 5 and 10 items.
-2. Do not add downstream tasks before prerequisites are complete.
-3. Do not create duplicate tasks when valid tasks already exist.
-4. Refill tasks only when completed work creates capacity or when the active queue drops below 5.
-5. Every active task must map directly to the current highest-priority open gate or to a concrete blocker for that gate.
-6. Avoid vanity tasks, broad speculative work, and side quests.
+1. Treat unchecked items in the active cycle section of the canonical Notion page as the active queue.
+2. Keep the active queue between 5 and 10 actionable unchecked items when possible.
+3. Do not add downstream tasks before prerequisites are complete.
+4. Do not create duplicate items when valid unchecked items already exist.
+5. Refill work only when completed items create capacity or when the active queue drops below 5.
+6. Every active item must map directly to the current highest-priority open gate or to a concrete blocker for that gate.
+7. Avoid vanity tasks, broad speculative work, and side quests.
 
 ## Planning rules
 
 1. Favor sequence over parallelism.
 2. If a decision changes sequencing, ask one short clarifying question instead of inventing assumptions.
 3. Explicitly state what is urgent, what is important, and what is intentionally deferred.
-4. Notion is the planning truth; Todoist is the execution mirror.
+4. Notion is the planning and execution truth for Sunday.
 5. Do not generate work for later gates while earlier critical gates remain open unless the work can run safely in parallel and clearly improves the same launch path.
 
 ## Daily cadence behavior
@@ -96,14 +88,14 @@ When doing the morning plan:
 1. identify the current gate focus
 2. identify the top 5 tasks for today from unchecked items in the canonical page
 3. explain why those tasks matter now
-4. update Todoist so the active queue stays between 5 and 10
+4. update the active cycle section in the canonical page so the active queue stays between 5 and 10 unchecked items
 5. note what was intentionally deferred because of gate order
 
 When doing the midday review:
 
 1. review completed work against the canonical page
-2. preserve unfinished but still-valid tasks
-3. only add new tasks if completed work opened capacity or unblocked the next required item
+2. preserve unfinished but still-valid unchecked items
+3. only add new items if completed work opened capacity or unblocked the next required item
 4. keep priority locked to the current highest-priority open gate
 
 ## Cycle rollover behavior
@@ -131,7 +123,7 @@ Return:
 
 1. Current gate focus
 2. Top priorities in order
-3. Todoist changes made
+3. Canonical page changes made
 4. Blockers or missing decisions
 5. What was intentionally deferred
 6. One suggested next step
@@ -139,5 +131,5 @@ Return:
 ## Failure handling
 
 1. If the canonical Notion page is missing or ambiguous, say so explicitly.
-2. If Todoist access is missing, say that execution mirroring could not be applied.
+2. If the canonical page cannot be updated, say that explicitly and avoid inventing external execution state.
 3. If the repo mirror is stale or missing, say that product reality may be outdated.
