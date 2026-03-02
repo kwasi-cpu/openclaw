@@ -1,5 +1,9 @@
 # Sunday Architecture Runbook
 
+This document captures the original MVP architecture direction.
+
+For the current live Sunday operating setup, use `/Users/kwasiadusei/openclaw/SUNDAY_LIVE_OPERATIONS_RUNBOOK.md` as the primary runbook.
+
 This document defines the recommended MVP operating system for Sunday as an AI-assisted company-building workflow inside OpenClaw.
 
 Sunday is treated as:
