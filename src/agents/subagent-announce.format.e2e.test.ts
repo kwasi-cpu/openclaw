@@ -427,6 +427,42 @@ describe("subagent announce formatting", () => {
     expect(call?.params?.threadId).toBe("99");
   });
 
+  it("normalizes Telegram topic targets for manual completion direct-send", async () => {
+    const { runSubagentAnnounceFlow } = await import("./subagent-announce.js");
+    sessionStore = {
+      "agent:main:subagent:test": {
+        sessionId: "child-session-direct-telegram-topic",
+      },
+      "agent:main:main": {
+        sessionId: "requester-session-direct-telegram-topic",
+      },
+    };
+    chatHistoryMock.mockResolvedValueOnce({
+      messages: [{ role: "assistant", content: [{ type: "text", text: "done" }] }],
+    });
+
+    const didAnnounce = await runSubagentAnnounceFlow({
+      childSessionKey: "agent:main:subagent:test",
+      childRunId: "run-direct-telegram-topic",
+      requesterSessionKey: "agent:main:main",
+      requesterDisplayKey: "main",
+      requesterOrigin: {
+        channel: "telegram",
+        to: "-1003500619927:topic:2",
+      },
+      ...defaultOutcomeAnnounce,
+      expectsCompletionMessage: true,
+    });
+
+    expect(didAnnounce).toBe(true);
+    expect(sendSpy).toHaveBeenCalledTimes(1);
+    expect(agentSpy).not.toHaveBeenCalled();
+    const call = sendSpy.mock.calls[0]?.[0] as { params?: Record<string, unknown> };
+    expect(call?.params?.channel).toBe("telegram");
+    expect(call?.params?.to).toBe("-1003500619927");
+    expect(call?.params?.threadId).toBe("2");
+  });
+
   it("steers announcements into an active run when queue mode is steer", async () => {
     const { runSubagentAnnounceFlow } = await import("./subagent-announce.js");
     embeddedRunMock.isEmbeddedPiRunActive.mockReturnValue(true);
@@ -810,6 +846,15 @@ describe("subagent announce formatting", () => {
       expectedChannel: "whatsapp",
       expectedAccountId: "acct-987",
     },
+    {
+      testName: "splits Telegram topic targets for direct announce delivery",
+      childRunId: "run-direct-telegram-topic",
+      requesterOrigin: { channel: "telegram", to: "-1003500619927:topic:2" },
+      expectedChannel: "telegram",
+      expectedAccountId: undefined,
+      expectedTo: "-1003500619927",
+      expectedThreadId: "2",
+    },
   ] as const)("$testName", async (testCase) => {
     const { runSubagentAnnounceFlow } = await import("./subagent-announce.js");
     embeddedRunMock.isEmbeddedPiRunActive.mockReturnValue(false);
@@ -831,6 +876,10 @@ describe("subagent announce formatting", () => {
     };
     expect(call?.params?.channel).toBe(testCase.expectedChannel);
     expect(call?.params?.accountId).toBe(testCase.expectedAccountId);
+    if ("expectedTo" in testCase) {
+      expect(call?.params?.to).toBe(testCase.expectedTo);
+      expect(call?.params?.threadId).toBe(testCase.expectedThreadId);
+    }
     expect(call?.expectFinal).toBe(true);
   });
 

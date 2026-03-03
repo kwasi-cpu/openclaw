@@ -11,6 +11,7 @@ import { callGateway } from "../gateway/call.js";
 import { normalizeMainKey } from "../routing/session-key.js";
 import { defaultRuntime } from "../runtime.js";
 import { extractTextFromChatContent } from "../shared/chat-content.js";
+import { parseTelegramTarget } from "../telegram/targets.js";
 import {
   type DeliveryContext,
   deliveryContextFromSession,
@@ -290,10 +291,26 @@ function resolveAnnounceOrigin(
   return mergeDeliveryContext(normalizedRequester, normalizedEntry);
 }
 
+function normalizeTelegramAnnounceOrigin(origin?: DeliveryContext): DeliveryContext | undefined {
+  const normalized = normalizeDeliveryContext(origin);
+  if (!normalized?.channel || normalized.channel !== "telegram" || !normalized.to) {
+    return normalized;
+  }
+  if (!normalized.to.includes(":topic:")) {
+    return normalized;
+  }
+  const parsed = parseTelegramTarget(normalized.to);
+  return normalizeDeliveryContext({
+    ...normalized,
+    to: parsed.chatId,
+    threadId: normalized.threadId ?? parsed.messageThreadId,
+  });
+}
+
 async function sendAnnounce(item: AnnounceQueueItem) {
   const requesterDepth = getSubagentDepthFromSessionStore(item.sessionKey);
   const requesterIsSubagent = requesterDepth >= 1;
-  const origin = item.origin;
+  const origin = normalizeTelegramAnnounceOrigin(item.origin);
   const threadId =
     origin?.threadId != null && origin.threadId !== "" ? String(origin.threadId) : undefined;
   // Share one announce identity across direct and queued delivery paths so
@@ -445,7 +462,7 @@ async function sendSubagentAnnounceDirectly(params: {
     params.targetRequesterSessionKey,
   );
   try {
-    const completionDirectOrigin = normalizeDeliveryContext(params.completionDirectOrigin);
+    const completionDirectOrigin = normalizeTelegramAnnounceOrigin(params.completionDirectOrigin);
     const completionChannelRaw =
       typeof completionDirectOrigin?.channel === "string"
         ? completionDirectOrigin.channel.trim()
@@ -488,7 +505,7 @@ async function sendSubagentAnnounceDirectly(params: {
       };
     }
 
-    const directOrigin = normalizeDeliveryContext(params.directOrigin);
+    const directOrigin = normalizeTelegramAnnounceOrigin(params.directOrigin);
     const threadId =
       directOrigin?.threadId != null && directOrigin.threadId !== ""
         ? String(directOrigin.threadId)
